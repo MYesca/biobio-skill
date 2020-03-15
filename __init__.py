@@ -57,8 +57,10 @@ class Biobio(MycroftSkill):
     def extract_birth_date(self, utt):
         dt_info = extract_datetime(utt)
         if dt_info:
-            birth = dt_info[0].replace(tzinfo=None)
-            if birth < datetime.today():
+            birth = dt_info[0].date() # .replace(tzinfo=None)
+            today = datetime.today().date()
+            self.log.info(f"BIRTH NO TZ ----->  {birth} / TODAY ------> {today}")
+            if birth < today:
                 return birth
         return None
 
