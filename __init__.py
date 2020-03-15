@@ -1,6 +1,6 @@
 import io
 from datetime import date, datetime
-from numpy import array,sin,pi
+from math import sin, pi
 
 from mycroft import MycroftSkill, intent_file_handler
 from mycroft.util import extract_datetime
@@ -18,7 +18,7 @@ class Biobio(MycroftSkill):
 
         t0 = dt_birth.toordinal()
         t1 = date.today().toordinal()
-        t = array(range((t1-10),(t1+10))) # range of 20 days
+        dates = list(range((t1-10),(t1+10))) # range of 20 days
 
         div = ''.join(['-'] * 92)
 
@@ -27,20 +27,24 @@ class Biobio(MycroftSkill):
         print("\n\n", file=output)
         print(div, file=output)
         print("                                         BIORRÍTMO", file=output)
-        print(f"Data de Nascimento: {dt_birth.strftime('%d/%m/%Y')}                              Período: {date.fromordinal(t[0]).strftime('%d/%m/%Y')} a {date.fromordinal(t[-1]).strftime('%d/%m/%Y')}", file=output)
+        print(f"Data de Nascimento: {dt_birth.strftime('%d/%m/%Y')}                              Período: {date.fromordinal(dates[0]).strftime('%d/%m/%Y')} a {date.fromordinal(dates[-1]).strftime('%d/%m/%Y')}", file=output)
         print(div, file=output)
 
-        y = [sin(2*pi*(t-t0)/23),  # Physical
-            sin(2*pi*(t-t0)/28),  # Emotional
-            sin(2*pi*(t-t0)/33)]  # Intellectual
+        p = []
+        e = []
+        i = []
+        for d in dates:
+            p.append(sin(2*pi*(d-t0)/23))
+            e.append(sin(2*pi*(d-t0)/28))
+            i.append(sin(2*pi*(d-t0)/33))
 
-        for i, p in enumerate(t):
-            line = ['.'] * 80 if p == t1 else [' '] * 80
-            line[int(40 + (y[0][i] * 39))] = 'f'
-            line[int(40 + (y[1][i] * 39))] = 'e'
-            line[int(40 + (y[2][i] * 39))] = 'i'
-            print(date.fromordinal(p).strftime('%d/%m/%Y') + '-' + ''.join(line), file=output)
-        
+        for ind, d in enumerate(dates):
+            line = ['.'] * 80 if d == t1 else [' '] * 80
+            line[int(40 + (p[ind] * 39))] = 'f'
+            line[int(40 + (e[ind] * 39))] = 'e'
+            line[int(40 + (i[ind] * 39))] = 'i'
+            print(date.fromordinal(d).strftime('%d/%m/%Y') + '-' + ''.join(line), file=output)
+
         print(div, file=output)
         print("f = Físico / e = Emocional / i = Intelectual", file=output)
         print(div, file=output)
