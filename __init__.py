@@ -57,9 +57,8 @@ class Biobio(MycroftSkill):
     def extract_birth_date(self, utt):
         dt_info = extract_datetime(utt)
         if dt_info:
-            birth = dt_info[0].date() # .replace(tzinfo=None)
+            birth = dt_info[0].date()
             today = datetime.today().date()
-            self.log.info(f"BIRTH NO TZ ----->  {birth} / TODAY ------> {today}")
             if birth < today:
                 return birth
         return None
@@ -67,11 +66,11 @@ class Biobio(MycroftSkill):
     @intent_file_handler('biobio.intent')
     def handle_biobio(self, message):
         birth = self.extract_birth_date(message.data["utterance"])
-        self.log.info(f"BIRTH 1 ----->  {birth}")
+        self.log.debug(f"BIRTH 1 ----->  {birth}")
         if birth is None:
             utt = self.get_response("ask.birth.date")
             birth = self.extract_birth_date(utt)
-            self.log.info(f"BIRTH 2 ----->  {birth}")
+            self.log.debug(f"BIRTH 2 ----->  {birth}")
             if birth is None:
                 self.speak("Sorry, could not understand your birth date, please start again.")
                 return
